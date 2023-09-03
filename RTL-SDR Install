@@ -1,0 +1,31 @@
+**Instructions for installing RTL-SDR drivers** 
+
+The first step is to install your new RTL-SDR. After SSH’ing into your Pi please run the following commands. 
+
+1. Dependencies
+
+sudo apt-get install git
+sudo apt-get install cmake
+sudo apt-get install build-essential  
+
+sudo apt install pkg-config  
+
+2. Drivers (Copy and Paste as a single command) 
+
+sudo apt install libusb-1.0-0 
+
+git clone git://git.osmocom.org/rtl-sdr.git 
+
+cd rtl-sdr 
+
+mkdir build 
+
+cd build 
+
+cmake .. 
+
+sudo make install 
+
+sudo ldconfig 
+
+sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
