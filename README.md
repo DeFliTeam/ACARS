@@ -13,7 +13,9 @@ The install provides:
 
 (4) Easy configuration - Provides a separate config file in simple format, each config item on a separate line, starting with --
 
-(5) Blacklisting of rtl-sdr - The installation script creates a blacklist file /etc/modprobe.d/blacklist-rtl-sdr.conf with required blacklist entries, preventing error: failed to connect/open rtl-sdr device.
+(5) Blacklisting of rtl-sdr - The installation script creates a blacklist file /etc/modprobe.d/blacklist-rtl-sdr.conf with required blacklist entries, preventing error: failed to connect/open rtl-sdr device. 
+
+Please first follow the steps in "Installing RTL-SDR Drivers" and "Installing GQRX"
 
 Copy-paste following command in SSH console and press Enter key. The script will install and configure ACARS. 
 
