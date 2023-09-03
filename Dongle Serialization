@@ -1,0 +1,37 @@
+(1) Plugin a second dongle for ACARS
+(2) Serialize both dongles, one to serial-number 00000101 and other to serial-number 00000102
+(3) Configure ACARS and readsb 
+
+sudo apt-get update
+sudo apt-get install rtl-sdr
+
+rtl_eeprom -s 00000101 -d 0
+rtl_eeprom -s 00000102 -d 1 
+
+After serialization, unplug, then replug both dongles.
+
+Use these serial numbers in config files of ACARS & readsb 
+
+ACARS 
+
+
+Code:
+
+sudo nano /usr/share/ad2/ad2.conf
+
+Add following line below the last line:
+--device-serial 00000102 
+
+
+READSB 
+
+/etc/default/readsb 
+
+scroll down till you see this line
+DEVICE=0
+
+Change it to
+DEVICE=00000101
+
+
+Sudo reboot
