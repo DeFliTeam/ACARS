@@ -1,0 +1,39 @@
+F:\>acarsdeco2.exe --help
+AcarSDeco2 v.20171115
+Program options:
+  -h [ --help ]         This help message
+  --device-list         List available SDR devices
+  --device-index arg    Select SDR device (default: 0)
+  --device-serial arg   Select SDR device by serial number
+  --gain arg            Set preamp gain of receiver, dB (default: auto)
+  --freq-correction arg Set oscillator frequency correction, ppm (default: 0)
+  --agc                 Enable automatic gain control in SDR chip (default: off)
+  --freq arg            Set receiver frequency, Hz
+                        Specify option --freq multiple times to multiple
+                        channels (Example: --freq XX --freq YY ...)
+  --inConnect arg       Input connector. Format: (sbs|ad2):host:port
+  --inConnectId arg     Named input connector. Format: (sbs|ad2):host:port:ID
+  --inServer arg        Input server. Format: (sbs|ad2):port
+  --inServerId arg      Named input server. Format: (sbs|ad2):port:ID
+  --inServerUdp arg     Input UDP server. Format: (sbs|ad2):port
+  --outServer arg       Output server. Format: (sbs|ad2|pp):port
+  --outConnect arg      Output connector. Format (sbs|ad2|pp):host:port
+  --outConnectUdp arg   Output UDP connector. Format: (sbs|ad2|pp):host:port
+  --http-port arg       Set port for http server (default: 8080)
+  --vrs-url arg         Set VirtualRadarServer url for additional aircraft data
+                        Example: http://example.com (default: off)
+  --pictures-url arg    Set aircraft pictures collection url
+                        Example: http://site.com/path/to/ (default: off)
+  --pictures arg        Set aircraft pictures collection local path
+                        Example: http://site.com/path/to/ (default: off)
+  --silhouettes arg     Set path to directory of aircrafts' silhouettes
+  --banners arg         Set path to directory of operators' logos
+  --frdb arg            Set path to flightroutes database file
+  --db arg              Set path to basestation database file
+  --no-uplink           Don't display uplink messages (default: on)
+  --no-sq               Don't display messages with SQ label (default: on)
+  --no-empty            Don't display empty messages (default: on)
+  --logfile arg         Set path to log filename (default: off)
+  --logfile-sbs arg     Set path to SBS CSV log filename (default: off)
+  --logfile-esbs arg    Set path to extended SBS CSV log filename (default: off)
+  --no-console          Disable logging on console (default: on)
