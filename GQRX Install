@@ -1,0 +1,48 @@
+To test your frequencies you must first install a programme called "GQRX" 
+
+Run these commands 
+
+sudo apt install gnuradio gqrx-sdr 
+
+gqrx 
+
+Once GQRX has launched you need to select your SDR from the drop down menu you are presented with on launch.  
+
+Tune GQRX to your country specific frequency, these are listed below, ensure that you tune to the primary worldwide channel as well as the primary channel for your region. 
+
+For each tuning you can adjust the Rf Gain and Tuned Bandwidth (Set to 5-10KHz) to obtain the best signal. 
+
+Ensure you are set to “AM” and that “Squelch” is turned off 
+
+131.550 Primary Channel worldwide 
+
+129.125 Additional channel for USA & Canada 
+
+130.025 Secondary channel for USA and Canada 
+
+130.425 Additional channel for USA 
+
+130.450 Additional channel for USA & Canada 
+
+131.125 Additional channel for USA 
+
+131.450 Primary channel for Japan 
+
+131.475 Air Canada company channel 
+
+131.525 European secondary 
+131.725 Primary channel in Europe 
+
+136.700 Additional channel for USA 
+
+136.750 Additional channel for USA 
+
+136.800 Additional channel for USA 
+
+136.900 European secondary 
+
+136.850 SITA North American Frequency 
+
+136.750 New European frequency 
+
+131.850 New European frequency 
