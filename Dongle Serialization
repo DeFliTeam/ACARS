@@ -25,7 +25,7 @@ Add following line below the last line:
 
 READSB 
 
-/etc/default/readsb 
+sudo nano /etc/default/readsb
 
 scroll down till you see this line
 DEVICE=0
