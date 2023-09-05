@@ -1,0 +1,51 @@
+Use this installation method if installing on a non UBuntu 22.04 device such as Debian or Raspbian 
+
+
+
+Step 2: Install the following dependencies with commands:  
+
+Sudo apt-install
+
+    gnuradio-dev
+
+    libvolk-dev
+
+    pybind11-dev
+
+    libsndlib1-dev
+
+Step 3:  Install GNU radio with PyBombs 
+
+sudo apt-get install python3-pip
+sudo pip3 install pybombs
+sudo apt-get install ccache # optional
+
+pybombs auto-config
+pybombs recipes add-defaults
+pybombs recipes add  sec-gr git+https://github.com/Sec42/sec-gr.git  
+
+Then
+
+mkdir ~/GR
+cd ~/GR
+pybombs recipes update
+pybombs prefix init
+echo 'PATH=/usr/lib/ccache:${PATH}' >> setup_env.sh # optional
+source setup_env.sh
+cp ~/.pybombs/recipes/sec-gr/example-config.yml .pybombs/config.yml # edit to taste  
+
+Then
+
+pybombs recipes update 
+
+pybombs install gnuradio 
+
+pybombs install gnuradio gqrx-sdr
+pybombs install gr-iridium
+pybombs install inspectrum
+
+Step 5: Launch GQRX with command 
+
+GQRX 
+
+You can then follow from step onwards from here https://defli.network/l-band-installation 
