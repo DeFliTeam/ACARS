@@ -1,0 +1,43 @@
+What the numbers mean on your data flow 
+
+Example flow 
+
+1678802073 | i: 255/s | i_avg: 343/s | q_max:   14 | i_ok:  86% | o:  638/s | ok:  98% | ok: 250/s | ok_avg:  74% | ok:   39410936 | ok_avg: 254/s | d: 0
+1678802074 | i: 335/s | i_avg: 343/s | q_max:   17 | i_ok:  88% | o:  844/s | ok: 102% | ok: 343/s | ok_avg:  74% | ok:   39411280 | ok_avg: 254/s | d: 0
+1678802075 | i: 398/s | i_avg: 343/s | q_max:   19 | i_ok:  77% | o: 1007/s | ok:  93% | ok: 373/s | ok_avg:  74% | ok:   39411654 | ok_avg: 254/s | d: 0
+1678802076 | i: 365/s | i_avg: 343/s | q_max:   15 | i_ok:  80% | o:  909/s | ok:  97% | ok: 354/s | ok_avg:  74% | ok:   39412010 | ok_avg: 254/s | d: 0
+1678802077 | i: 476/s | i_avg: 343/s | q_max:   20 | i_ok:  55% | o: 1108/s | ok:  61% | ok: 293/s | ok_avg:  74% | ok:   39412304 | ok_avg: 254/s | d: 0
+
+Column Mnemonic Explanation 1 time Current time in seconds (unix time)
+2 i: Live input number of “bursts” detected in the last second. Will change a large amount as the satellites pass over head and vary based on the amount of Iridium traffic the sats are hearing.
+3 i_ave: Running average of 2 since program start. If you don’t have any interference, higher is better. North of 100 at the very least for a good location. Aust should be around 50 here.
+4 q_max: High-water mark of the sum of the queue size(s) in the last second. ie bursts your CPU has not been able to process and so has put in a queue for latter processing.
+5 i_ok: Percentage of bursts with at least one ok frame relative to 2. Not all bursts have frame decodable data, so this is of interest, but not critical as there is nothing we can do either way.
+6 o: Number of “frames” after splitting bursts into frames. Not of much use to station owners.
+7 ok: Percentage of “ok” frames(8) relative to 2. Since each burst can have up to 4 frames of data, this Ok% can go above 100%
+8 ok: Number of frames in the last second that could be extracted & demodulated
+9 ok_ave: Average average of 7 since program start
+10 ok: Total number of ok frames since program start
+11 ok_ave: Running average of 8 since program start
+12 d: Total number of candidate bursts that had to be dropped due to queue (4) full (i.e. CPU being too slow)
+
+Lets break down the table a bit into human terms (if we can).
+1 = time. There are some concern’s about this time being different across computers. This is understandable as not all computers are running NTP (time sync). Each ACARS is timestamped on my site, so for now, thats the setup.
+2 i: = Raw bursts. This is a big key to how well your front end is working. The more bursts you see, the better your antenna and SDR gain is dialed. Iridium traffic dependent. (Location and time of day variable).
+Do note that this number will go up and down as the LEO satellites fly past over head. And not just the number or azimuth of the satellite, but also the amount of traffic on that satellite at the time. You need to keep a mental track of this number, but is first number is the one that gives the best metric of how well the RF aspect of your station is working.
+If you are only seeing 10 to 80 bursts typically, your system will seem to be working great and you will have a high ‘Ok’ number, you will even see some map coverage, but your ACARS message rate will be very low. ie, low volume of data in, low volume of data out.
+3 i_ave: = average of 2. Helpful since the sats are really moving and the amount of traffic on any given sat changes from moment to moment.
+4 q_max: = Bursts you PC cant process due to being busy. Helpful to know how hard your CPU is backlogged. Should be less than 20 most of the time. High numbers indicate not enough CPU power to decode the bursts.
+5 i_ok: = We cant do anything about this number. Not all bursts have decodable data in them.
+6 o: = How well your computer has pulled frame data out of the burst. Not always linked to CPU, not really much use to the station owner.
+7 ok: = Live Ok frames of data in each burst. Since each burst can have 4 frames, you can see more than 100%, which is pretty cool.
+8 ok: = This will somewhat reflect 2. High number in, high samples decoded, low in, low decoded. However, its also linked to the amount of data in each burst.
+9 ok_avg: = Running total of how your CPU is keeping up with 1 and 4, but also to some extent 7. So good bursts in (clean RF), small que depth and good amount of decodable frame data in any given burst that your CPU could decode.
+10 = Total number of frames decoded. Just a big (hopefully) number that goes up over time. (Note, worth considering having a batch job to stop/start the extractor at midnight so this number does not get too large and it might be nice to log the daily total - on the to-do list).
+11 = Important number. Higher is better. Really a heath check on all the preceding numbers (and the last one).
+12 = Dropped frames. Should be zero ideally. If consistently showing a value, your CPU is underpowered for your location/data rate.
+
+Lets try and break that down even more…..
+2, 3 and 5 (i, i_ave and i_ok) are RF metrics. They show how well your location, antenna, LNA, coax are working. Should be well north of 100. North of 250 would be better still. Use antenna type, placement, LNA type/filtering (GPS and Iridium are close, a filtered LNA helps Iridium) and SDR gain to get up there.
+4 and 12 (q_max and d) are CPU metrics. If you have North of 20-30 in your que and dropped samples, your CPU is just not up to the job.
+9 should be as high as your computer can push it.
