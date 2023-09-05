@@ -1,0 +1,150 @@
+Step 1: GNU Radio. Run the following commands: 
+
+sudo apt update
+
+sudo apt install gnuradio-dev gr-osmosdr cmake libsndfile1-dev 
+
+You might have to disconnect and re-connect your SDR if it was already connected to your computer. 
+
+Step 2: Volk: Run the command as a normal user, not root or sudo 
+
+volk_profile 
+
+Step 3: Install gr-iridium. Run these commands:  
+
+git clone https://github.com/muccc/gr-iridium
+
+cd gr-iridium
+
+cmake -B build
+
+cmake --build build -j 2
+
+sudo cmake --install build
+
+sudo ldconfig
+
+Step 4: Install and launch GQRX. Run the following commands: 
+
+sudo apt-install gnuradio gqrx-sdr 
+
+gqrx
+
+Step 5: Understanding GQRX 
+
+Launch GQRX and choose your serialized SDR. Tune to the centralized frequency for L-Band, this is 1622.007.624. Set your bandwidth to 10MHz. 
+
+If you are receiving messages you will see what look like small raindrops on your waterfall. If you are not seeing these then adjust the tuner up and down until you do
+
+Gain- It is important to obtain the correct gain: 
+
+
+Move the gain up and down very slowly, one click at a time till you have the tallest height on the signals and lowest noise floor. Make a note of that number
+
+Step 6: Decoding ACARS 
+
+cd ~ 
+
+nano rtl-sdr.conf 
+
+Then enter the following in to the blank file  
+
+[osmosdr-source]
+sample_rate=2000000
+center_freq=1625500000
+
+# Uncomment the following line to specify which RTL-SDR to use
+# 0 is the first device
+#device_args='rtl=0'
+
+# Uncomment to use the RTL-SDR's Bias Tee if available
+# device_args='rtl=0,bias=1'
+
+# Automatic bandwidth
+bandwidth=0
+
+# LNA gain
+gain=19 (change this to the gain determined by GQRX)
+
+# Moderate gains
+if_gain=30
+
+Step 7- Run the extractor using the following command: 
+
+iridium-extractor -D 4 --multi-frame ~/rtl-sdr.conf | python3 -u /usr/src/iridium-toolkit/iridium-parser.py -o zmq
+
+Once up and running you are going to get an output that looks something like this: 
+
+1666645162 | i: 351/s | i_avg: 392/s | q_max: 24 | i_ok: 79% | o: 751/s | ok: 82% | ok: 291/s | ok_avg: 85% | ok: 31170861 | ok_avg: 334/s | d: 8260
+
+Step 8- Send us your data via UDP 
+
+In a new terminal (but with the previous one still open) run command 
+
+nano acars.py 
+
+Then copy/paste the below text: 
+
+#!/usr/bin/env python3   
+   
+import sys   
+import select   
+import time   
+import socket   
+   
+   
+ap = ("162.255.85.52", 30087)   
+sk = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)   
+def sendOverUdp(line):   
+    try:   
+        bytes = str.encode(line)   
+        print(len(bytes))   
+        if len(bytes) < 65300 :   
+           sk.sendto(bytes, ap)   
+    except Exception as e:   
+        print(e)  
+   
+def no_input():   
+    print('no input')   
+   
+while True:   
+    line = sys.stdin.readline()   
+    if line:   
+        sendOverUdp(line)   
+    else:   
+        time.sleep(1)   
+else:   
+    no_input()    
+
+Step 9: Create data feed 
+
+Run the following command but swap out “YOUname” for your GS ID and “YOUairport” for the ICAO code of your nearest airport
+
+python3 -u /usr/src/iridium-toolkit/reassembler.py -i zmq: -m acars -a json --station YOUname-IRIDIUM-YOUairport | python3 ~/acars.py
+
+Step 10: See Your Data 
+
+In a new terminal enter the following command to see your message stream: 
+
+python3 -u /usr/src/iridium-toolkit/reassembler.py -m acars zmq: 
+
+Step 11: See Your Local Map 
+
+In a new terminal enter the following command: 
+
+cd /usr/src/iridium-toolkit/html
+sudo nano example.sh 
+
+On the second bottom line, if not already done, add a 3 at the end of the word python and be sure and change the IP address for your PC (your PC might not be 192.168.1.122), so it should read
+
+
+python3 -m http.server --bind 192.168.1.22 8888 
+
+
+Save and exit nano 
+
+In the terminal run the example file: sudo ./example.sh
+
+
+At this point, you can visit your PC’s IP address from any browser on your network and look for the map, so in my case http://192.168.1.122:8888/map.html
+Let that run. You should see the sats and beams update around once a minute
