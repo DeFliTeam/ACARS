@@ -17,7 +17,7 @@ deb [arch=armhf,arm64] http://archive.ubuntu.com/ubuntu/ xenial main multiverse 
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ xenial main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ xenial-updates main multiverse restricted universe
 deb [arch=armhf,arm64] http://archive.ubuntu.com/ubuntu/ xenial-updates main multiverse restricted universe
-deb [arch=armhf,arm64]http://security.ubuntu.com/ubuntu/ xenial-security main multiverse restricted universe 
+deb [arch=armhf,arm64] http://security.ubuntu.com/ubuntu/ xenial-security main multiverse restricted universe 
 
 save + exit 
 
