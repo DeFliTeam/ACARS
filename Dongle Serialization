@@ -12,7 +12,7 @@ After serialization, unplug, then replug both dongles.
 
 Use these serial numbers in config files of ACARS & readsb 
 
-ACARS 
+ACARS VHF
 
 
 Code:
@@ -20,7 +20,18 @@ Code:
 sudo nano /usr/share/ad2/ad2.conf
 
 Add following line below the last line:
---device-serial 00000102 
+--device-serial 00000102  
+
+ACARS L-BAND 
+
+cd ~ 
+
+nano rtl-sdr.conf  
+
+# Uncomment the following line to specify which RTL-SDR to use
+# 0 is the first device
+#device_args='rtl=0'
+Choose the device number (currently set to 0)
 
 
 READSB 
