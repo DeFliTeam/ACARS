@@ -29,3 +29,5 @@ sudo make install
 sudo ldconfig 
 
 sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
+
+cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
