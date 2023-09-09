@@ -12,7 +12,7 @@ sudo apt install pkg-config
 
 2. Drivers (Copy and Paste as a single command) 
 
-sudo apt install libusb-1.0-0 
+sudo apt install libusb-1.0-0-dev
 
 git clone git://git.osmocom.org/rtl-sdr.git 
 
