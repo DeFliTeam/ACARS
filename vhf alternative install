@@ -1,0 +1,81 @@
+This installation does not provide a web interface but is an easier install 
+
+
+
+Step 1  (SDR NOT PLUGGED)
+sudo apt update 
+
+sudo apt upgrade -y 
+
+Step 2 (SDR NOT PLUGGED)
+
+
+
+sudo apt-get install cmake git libusb-1.0 libusb-1.0-0.dev pkg-config rtl-sdr gr-osmosdr -y
+
+Step 3 (Run as one command) (SDR NOT PLUGGED)
+
+cd ~
+
+git clone https://github.com/osmocom/rtl-sdr.git 
+
+clear
+
+cd rtl-sdr
+
+sudo mkdir build
+
+cd build/ 
+
+clear
+
+sudo cmake ../ -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON
+
+sudo make
+
+sudo make install
+
+sudo ldconfig 
+
+Step 4 (run as one command) (SDR Plugged in)
+
+clear
+
+cd ~
+
+git clone https://github.com/szpajder/libacars
+
+cd libacars
+
+git checkout unstable 
+
+mkdir build
+cd build
+cmake ../
+
+make
+
+sudo make install
+
+sudo ldconfig
+
+Step 5 (run as one command) (SDR Plugged in)
+
+clear
+
+git clone https://github.com/TLeconte/acarsdec.git
+
+cd acarsdec
+
+mkdir build
+
+cd build/
+
+sudo cmake .. -Drtl=ON
+
+sudo make
+
+sudo make install
+
+sudo ldconfig
+
