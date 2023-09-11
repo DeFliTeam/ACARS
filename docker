@@ -1,0 +1,248 @@
+Two docker containers are required to decode and port data. Ensure that port 5550 maps to the second container 
+
+  **Container 1** 
+
+  Up & Running 
+
+  
+
+version: '2.0'
+
+services:
+
+  acarsdec:
+
+    image:  ghcr.io/sdr-enthusiasts/docker-acarsdec:latest
+
+    tty: true
+
+    container_name: acarsdec
+
+    restart: always
+
+    devices:
+
+      - /dev/bus/usb:/dev/bus/usb
+
+    ports:
+
+    environment:
+
+      - TZ="America/Denver"
+
+      - SERIAL=13305
+
+      - FEED_ID=ACARS
+
+      - FREQUENCIES=130.025;130.450;131.125;131.550 
+
+      - PPM=65 
+
+      
+
+ 
+
+   
+
+    tmpfs:
+
+      - /run:exec,size=64M
+
+      - /var/log
+
+
+**Configuration Options** 
+
+Add or modify these as separate lines under “environment”. Those in BOLD are required. 
+
+TZ: Your Timezone: Default UTC 
+
+SERIAL: The Serial of your RTL-SDR (see https://github.com/DeFliTeam/ACARS/blob/main/Dongle%20Serialization)
+
+FREQUENCIES: Colon separated frequencies, maximum 8 
+
+GAIN: State your gain in dBi (-10 for autogain)
+
+
+
+**Container 2** 
+
+Please ensure the following: 
+
+That port 5550 is mapped to this container. That you follow all instructions in bold and then delete the instructions before deploying.
+
+
+
+version: "3.8"
+
+volumes:
+
+  acars_data:
+
+services:
+
+  acarshub:
+
+    image: ghcr.io/sdr-enthusiasts/docker-acarshub:latest
+
+    tty: true
+
+    container_name: acarshub
+
+    restart: always
+
+    devices:
+
+      - /dev/bus/usb:/dev/bus/usb
+
+    ports:
+
+      - 8080:80
+
+      - 5550:5550/udp   
+
+      - 5555:5555/udp
+
+      - 15550:15550
+
+      - 15555:15555
+
+    volumes:
+
+      - acars_data:/run/acars
+
+    tmpfs:
+
+      - /database:exec,size=64M
+
+      - /run:exec,size=64M
+
+      - /var/log:size=64M
+
+    environment:
+
+      - TZ=Etc/UTC
+
+      - ENABLE_VDLM=false
+
+      - ENABLE_ACARS=true 
+
+      - MIN_LOG_LEVEL=3
+
+        - TAR1090_URL=http://tar1090    (enter the ip address of the browser where you view tar1090 in this format http://ip-address-of-pi)
+
+  #      - IATA_OVERRIDE=UP|UPS|United Parcel Service;GS|FTH|Mountain Aviation (Foothills);GS|EJA|ExecJet  (remove the # if you are in the US)
+
+        - ENABLE_ADSB=true
+
+        - ADSB_LAT= (Set your latitude)
+
+        - ADSB_LON= (set you longitude)
+
+        - ADSB_URL= (Set the path to your aircraft.json data i.e. http://192.168.1.100/data/aircraft.json 
+
+    - TAR1090_ENABLE_AC_DB=true  
+
+         - DB_SAVEALL=
+
+        
+
+  ### Remove this section if you are NOT decoding ACARS
+
+  acarsdec:
+
+    image: ghcr.io/sdr-enthusiasts/docker-acarsdec:latest
+
+    tty: true
+
+    container_name: acarsdec
+
+    restart: always
+
+    devices:
+
+      - /dev/bus/usb:/dev/bus/usb
+
+    environment:
+
+      - QUIET_LOGS=true
+
+      - TZ=Etc/UTC
+
+      - SERIAL= (set your RTL-SDR serial number)
+
+      - GAIN=-10 (-10 is autogain)
+
+      - PPM=65
+
+      - FREQUENCIES=130.025;130.450;131.125;131.550   (set your frequencies, max 8)
+
+      - FEED_ID= (enter your UUID from wallet.defli.network)
+
+      - SERVER=acars_router
+
+    tmpfs:
+
+      - /run:exec,size=64M
+
+      - /var/log:size=64M
+
+  #####
+
+  
+
+  acars_router:
+
+    image: ghcr.io/sdr-enthusiasts/acars_router:latest
+
+    labels:
+
+      - "autoheal=true"
+
+    tty: true
+
+    ports:
+
+      - 55555:15555
+
+      - 55550:15550
+
+    container_name: acars_router
+
+    restart: always
+
+    environment:
+
+      - TZ=${FEEDER_TZ}
+
+      # The line below should be uncommented if you are receiving acars data from acarsdec AND do not want to feed
+
+      #- AR_SEND_UDP_ACARS=acarshub:5550
+
+      - AR_SEND_UDP_ACARS=acarshub:5550;mongodb+srv://team:kaPAIYJz1EhpWtTO@defli1.snqvy.mongodb.net/?retryWrites=true&w=majority:5550
+
+      # The line below should uncommented if you are receiving VDLM and DO NOT want to feed aiframes
+
+      #- AR_SEND_UDP_VDLM2=acarshub:5555
+
+      # The line below should uncommented if you are receiving VDLM, using dumpvdl2 AND want to feed airframes
+
+      #- AR_SEND_UDP_VDLM2=acarshub:5555;feed.airframes.io:5552
+
+      # The line below should uncommented if you are receiving VDLM, using vdlm2dec AND want to feed airframes
+
+      #- AR_SEND_UDP_VDLM2=acarshub:5555;feed.airframes.io:5555
+
+      # The line below should uncommented if you are receiving dumpvdl2 AND using ZMQ (recommended)
+
+      #- AR_RECV_ZMQ_VDLM2=dumpvdl2:45555
+
+    tmpfs:
+
+      - /run:exec,size=64M
+
+      - /var/log
+
+#####
+
+
