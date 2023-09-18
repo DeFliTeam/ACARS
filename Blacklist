@@ -1,7 +1,8 @@
-sudo nano /etc/modprobe.d/blacklist-rtl-sdr.conf 
+#!/bin/bash
 
-add 
-
+# Create or edit the blacklist configuration file
+sudo tee /etc/modprobe.d/blacklist-rtl-sdr.conf <<EOF
 blacklist rtl2832
 blacklist dvb_usb_rtl28xxu
 blacklist dvb_usb_v2,rtl2832
+EOF
