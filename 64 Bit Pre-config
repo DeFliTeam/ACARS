@@ -1,24 +1,26 @@
-For 64 Bit devices you must run this pre configuration 
+#!/bin/bash
 
-sudo dpkg --add-architecture armhf   
-sudo apt update 
+# Check if the system is already set up for armhf architecture
+if dpkg --print-architecture | grep -q "armhf"; then
+    echo "System is already set up for armhf architecture."
+else
+    # Enable armhf architecture and update package list
+    sudo dpkg --add-architecture armhf
+    sudo apt update
 
-sudo apt install libudev-dev:armhf   
-
-If you get an error then use the following steps 
-
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.old 
-
-sudo nano /etc/apt/sources.list 
-
-DELETE everything in the file and add these (if you are running jammy or another ubuntu then replace "xenial" with jammy
-
+    # Edit the sources.list file
+    sudo cp /etc/apt/sources.list /etc/apt/sources.list.old
+    sudo tee /etc/apt/sources.list <<EOF
 deb [arch=armhf,arm64] http://archive.ubuntu.com/ubuntu/ xenial main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ xenial main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ xenial-updates main multiverse restricted universe
 deb [arch=armhf,arm64] http://archive.ubuntu.com/ubuntu/ xenial-updates main multiverse restricted universe
-deb [arch=armhf,arm64] http://security.ubuntu.com/ubuntu/ xenial-security main multiverse restricted universe 
+deb [arch=armhf,arm64] http://security.ubuntu.com/ubuntu/ xenial-security main multiverse restricted universe
+EOF
 
-save + exit 
+    # Update package list again
+    sudo apt update
+fi
 
-sudo apt install libudev-dev:armhf 
+# Install libudev-dev for armhf architecture
+sudo apt install libudev-dev:armhf
